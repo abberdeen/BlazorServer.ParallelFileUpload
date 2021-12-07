@@ -1,0 +1,28 @@
+﻿@page "/"
+@using BlazorServer.ParallelFileUpload
+@using System.Text
+@inject FileUploadManager FileUploadManager
+
+<PageTitle>Index</PageTitle>
+
+<h1>File Upload</h1> 
+
+<p><b>To reproduce bug just pick the files in any input</b></p>
+<p>The error can appear in most cases only after the first page load</p>
+<p>Please, do not pick twice with single InputFile (in case if work)</p>
+<p>Multiple inputs used for this: https://github.com/dotnet/aspnetcore/issues/28126 </p>
+
+<InputFile multiple="true" OnChange="@UploadFiles"></InputFile>
+<InputFile multiple="true" OnChange="@UploadFiles"></InputFile>
+<InputFile multiple="true" OnChange="@UploadFiles"></InputFile>
+<InputFile multiple="true" OnChange="@UploadFiles"></InputFile>
+ 
+
+@code
+{  
+    private void UploadFiles(InputFileChangeEventArgs e)
+    {
+        var files = e.GetMultipleFiles(100);
+        FileUploadManager.AddFilesToUploadQueue(files);
+    } 
+}
