@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace BlazorServer.ParallelFileUpload
 {
@@ -49,16 +52,20 @@ namespace BlazorServer.ParallelFileUpload
                     {
                         fileUploadQueue.TryDequeue(out file);
                     }
-
-                    using (var readStream = file.OpenReadStream(int.MaxValue))
+                    try
                     {
-                        var streamContent = fileUploadService.CreateStreamContent(readStream, file.Name, file.ContentType);
+                        using (var readStream = file.OpenReadStream(int.MaxValue))
+                        {
+                            var streamContent = fileUploadService.CreateStreamContent(readStream, file.Name, file.ContentType);
 
-                        var result = await fileUploadService.UploadFileAsync(streamContent);
+                            var result = await fileUploadService.UploadFileAsync(streamContent);
+                        }
+
                     }
-
-                    semaphoreSlim.Release();
-
+                    finally
+                    {
+                        semaphoreSlim.Release();
+                    }                   
                 });
 
                 tasks.Add(t);

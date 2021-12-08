@@ -1,4 +1,8 @@
-﻿using System.Net.Http.Headers; 
+﻿using Microsoft.AspNetCore.Http;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace BlazorServer.ParallelFileUpload
 {
